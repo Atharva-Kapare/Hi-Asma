@@ -1,0 +1,86 @@
+entity-relationship-diagram
+
+title World Sport Action
+colorMode bold
+styleMode shadow
+typeface clean
+
+COMPETITION [icon: dribbble, color: blue] {
+  competition_id int PK
+  name string
+  start_date date
+  end_date date
+}
+
+DIVISION [icon: divide-square, color: skyblue] {
+  division_id int PK
+  competition_id int FK
+  name string
+}
+
+TEAM [icon: users, color: lightblue] {
+  team_id int PK
+  division_id int FK
+  name string
+}
+
+PLAYER [icon: user, color: teal] {
+  player_id int PK
+  team_id int FK
+  name string
+  matches_played int
+}
+
+MATCH [icon: award, color: purple] {
+  match_id int PK
+  division_id int FK
+  match_date date
+  match_round string
+}
+
+MATCH_TEAM [icon: handshake, color: purple] {
+  match_id int PK,FK
+  team_id int PK,FK
+}
+
+BORROWING_RESTRICTION [icon: alert-octagon, color: red]{
+  restriction_id int PK
+  borrowing bool
+  borrow_from_all bool
+}
+
+RESTRICTION_RELATION [icon: alert-octagon, color: red] {
+  restriction_id int PK,FK
+  from_division_id int PK,FK
+  to_division_id int PK,FK
+}
+
+FINALS_ELIGIBILITY [icon: alert-triangle, color: red] {
+  eligibility_id int PK
+  division_id int FK
+  min_matches_required int
+  borrowed_players bool
+  started_matches bool
+  all_rounds bool
+}
+
+ELIGIBLE_ROUNDS [icon: alert-circle, color: red] {
+  eligibility_id int PK, FK
+  match_id int PK, FK
+}
+
+COMPETITION.competition_id < DIVISION.division_id
+DIVISION.division_id < TEAM.team_id
+DIVISION.division_id < MATCH.match_id
+DIVISION.division_id < BORROWING_RESTRICTION.restriction_id
+DIVISION.division_id < FINALS_ELIGIBILITY.eligibility_id
+TEAM.team_id < PLAYER.player_id
+TEAM.team_id <> MATCH.match_id
+PLAYER.player_id < MATCH.match_id
+MATCH.match_id < MATCH_TEAM.match_id
+TEAM.team_id < MATCH_TEAM.team_id
+FINALS_ELIGIBILITY.eligibility_id < ELIGIBLE_ROUNDS.eligibility_id
+MATCH.match_id < ELIGIBLE_ROUNDS.match_id
+BORROWING_RESTRICTION.restriction_id  < RESTRICTION_RELATION.restriction_id
+RESTRICTION_RELATION.from_division_id > DIVISION.division_id
+RESTRICTION_RELATION.to_division_id > DIVISION.division_id
